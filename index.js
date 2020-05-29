@@ -29,7 +29,7 @@ function showSlide() {
     cityContent.innerHTML = slider.city[slider.curSlide-1];
     areaContent.innerHTML = slider.area[slider.curSlide-1];
     timeContent.innerHTML = slider.time[slider.curSlide-1];
-    imgContent.src = `./image/image${slider.curSlide}.jpg`;
+    imgContent.src = `./images/image${slider.curSlide}.jpg`;
 }  
 
 const chooseSlide = (event) => {
