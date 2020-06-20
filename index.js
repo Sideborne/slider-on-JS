@@ -1,73 +1,99 @@
-let slider = {
-    curSlide: 1,
-    city: ['Rostov-on-Don<br>LCD admiral', 'Sochi<br>Thieves', 'Rostov-on-Don<br>Patriotic'],
-    area: [81, 105, 93],
-    time: [4.5, 4, 3]
-}
+const cityContent = document.getElementById("city-left");
+const areaContent = document.getElementById("area-left");
+const timeContent = document.getElementById("time-left");
+const imgContent = document.getElementById("slide-image");
+const topLinks = document.getElementsByClassName("main__block-one__menu__li");
+const dotLinks = document.getElementsByClassName(
+  "main__block-one__slider__dot"
+);
+const arrowLinks = document.getElementsByClassName("slider-arrows");
 
-const cityContent = document.getElementById('city-left');
-const areaContent = document.getElementById('area-left');
-const timeContent = document.getElementById('time-left');
-const imgContent = document.getElementById('slide-image');
-const topLinks = document.getElementsByClassName('main__block-one__menu__li');
-const dotLinks = document.getElementsByClassName('main__block-one__slider__dot');
-const arrowLinks = document.getElementsByClassName('slider-arrows');
+const slider = {
+  curSlide: 0,
+  city: [
+    "Rostov-on-Don<br>LCD admiral",
+    "Sochi<br>Thieves",
+    "Rostov-on-Don<br>Patriotic"
+  ],
+  area: [81, 105, 93],
+  time: [4.5, 4, 3],
+  slides: []
+};
+
+for (let i = 0; i < topLinks.length; i++) {
+  slider.slides.push({
+    elTop: topLinks[i],
+    elDot: dotLinks[i],
+
+    city: slider.city[i],
+    area: slider.area[i],
+    time: slider.time[i],
+
+
+    activate: function() {
+      this.elTop.classList.add("li_active");
+      this.elDot.classList.add("dot_active");
+
+      cityContent.innerHTML = this.city;
+      areaContent.innerHTML = this.area;
+      timeContent.innerHTML = this.time;
+      imgContent.src = `./images/image${i + 1}.jpg`;
+    },
+
+    deactivate: function() {
+      this.elTop.classList.remove("li_active");
+      this.elDot.classList.remove("dot_active");
+    }
+  });
+}
 
 function showSlide() {
-    for (let i = 1; i <= 3; i++) {
-        const activeLi = topLinks[i-1];
-        const activeDot = dotLinks[i-1];
-        if (i == slider.curSlide) {
-            activeLi.classList.add('li_active');
-            activeDot.classList.add('dot_active');
-        }
-        else {
-            activeLi.classList.remove('li_active');
-            activeDot.classList.remove('dot_active');
-        }
+  for (let i = 0; i < slider.slides.length; i++) {
+    const currentSlide = slider.slides[i];
+    if (i === slider.curSlide) {
+      currentSlide.activate();
+    } else {
+      currentSlide.deactivate();
     }
-    cityContent.innerHTML = slider.city[slider.curSlide-1];
-    areaContent.innerHTML = slider.area[slider.curSlide-1];
-    timeContent.innerHTML = slider.time[slider.curSlide-1];
-    imgContent.src = `./images/image${slider.curSlide}.jpg`;
-}  
-
-const chooseSlide = (event) => {
-    slider.curSlide = event.target.dataset.slide;
-    clearInterval(intervalID);
-    showSlide();
+  }
 }
+
+const chooseSlide = event => {
+  slider.curSlide = event.target.dataset.slide;
+  clearInterval(intervalID);
+  showSlide();
+};
 
 showSlide();
 
-  let intervalID = setInterval (() => {
-      slider.curSlide++;
-      if (slider.curSlide > 3) slider.curSlide = 1;
-      showSlide();
-  }, 3000);
+let intervalID = setInterval(() => {
+  slider.curSlide++;
+  if (slider.curSlide >= 3) slider.curSlide = 0;
+  showSlide();
+}, 3000);
 
 for (let link of topLinks) {
-    link.addEventListener('click', (event) => {
-        chooseSlide(event);
-    });
+  link.addEventListener("click", event => {
+    chooseSlide(event);
+  });
 }
 
 for (let link of dotLinks) {
-    link.addEventListener('click', (event) => {
-        chooseSlide(event);
-    });
+  link.addEventListener("click", event => {
+    chooseSlide(event);
+  });
 }
 
 for (let link of arrowLinks) {
-    link.addEventListener('click', (event) => {
-        clearInterval(intervalID);
-        if (event.target.id === 'next-arrow') {
-            slider.curSlide++;
-            if (slider.curSlide > 3) slider.curSlide = 1;
-        } else {
-            slider.curSlide--;
-            if (slider.curSlide < 1) slider.curSlide = 3;
-        } 
+  link.addEventListener("click", event => {
+    clearInterval(intervalID);
+    if (event.target.id === "next-arrow") {
+      slider.curSlide++;
+      if (slider.curSlide >= 3) slider.curSlide = 0;
+    } else {
+      slider.curSlide--;
+      if (slider.curSlide < 0) slider.curSlide = 2;
+    }
     showSlide();
-    });
+  });
 }
